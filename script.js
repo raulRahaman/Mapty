@@ -11,41 +11,44 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
-if (navigator.geolocation) 
-  navigator.geolocation.getCurrentPosition(function (position) {
-    const { longitude, latitude } = position.coords;
-    console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+if (navigator.geolocation)
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      const { longitude, latitude } = position.coords;
+      console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
 
-    const coordinates = [latitude, longitude];
+      const coordinates = [latitude, longitude];
 
-    //Map
-    const map = L.map('map').setView(coordinates, 15);
-    const myIcon = L.icon({ iconUrl: 'icon.png' });
+      //Map
+      const map = L.map('map').setView(coordinates, 15);
+      const myIcon = L.icon({ iconUrl: 'icon.png', riseOnHover: true });
 
-    //https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png
-    L.tileLayer(
-      'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png',
-      {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }
-    ).addTo(map);
+      //https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png
+      L.tileLayer(
+        'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png',
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }
+      ).addTo(map);
 
-    map
-      .on('click', function (mapE) {
+      map.on('click', function (mapE) {
         const { lat, lng } = mapE.latlng;
 
-        L.marker([lat, lng], { riseOnHover: true, icon: myIcon });
-      })
-      .addTo(map)
-      .bindPopup('Current location.')
-      .openPopup();
-  });
-
-  L.marker(coordinates)
-    .addTo(map)
-    .bindPopup('Current location.<br> Easily customizable.')
-    .openPopup();
-},
-() => alert('Current poisiton unavailable')
-);
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(
+            L.popup({
+              maxHeight: 100,
+              autoClose: false,
+              closeOnClick: false,
+              riseOnHover: true,
+              content: 'Run🏃🏽',
+              className: 'running-popup',
+            })
+          )
+          .openPopup();
+      });
+    },
+    () => alert('Current poisiton unavailable')
+  );
